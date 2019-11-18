@@ -1,26 +1,21 @@
 <?php
 
-require_once('PHPMailer-master/class.phpmailer.php');
+/**
+* This section ensures that Twilio gets a response.
+*/
+
+header('Content-type: text/xml');
+echo '<?xml version="1.0" encoding="UTF-8"?>'; 
+echo '<Response></Response>'; // Place the desired response (if any) here.
 
 /**
 * This section actually sends the email.
 */
 
-$email = new PHPMailer();
-$email->From = 'Justadfuel@gmail.com';
-$email->FromName = 'Mauro Cibien';
-$email->Subject = 'New voicemail Message';
-$email->Body = 'You have a new voicemail message. Mp3 recording is attached.';
-$email->AddAddress( 'justadfuel@gmail.com' );
-
-$recordingUrl = @$_REQUEST['RecordingUrl'];
-$duration = @$_REQUEST['Duration'];
-$callerId = @$_REQUEST['From'].'.mp3';
-$attachment_data = file_get_contents($recordingUrl);
-
-
-$email->addStringAttachment($attachment_data,$callerId, 'base64', 'audio/mpeg3');
-
-return $email->Send();
-
-echo '<Response/>';
+/* Your email address. */
+$to = "justadfuel@gmail.com";
+$subject = "Message from {$_REQUEST['From']}";
+$message = "You have received a message from {$_REQUEST['From']}.";
+$message .= "To listen to this message, please visit this URL: {$_REQUEST['RecordingUrl']}";
+$headers = "justadfuel@gmail.com"; // Who should it come from?
+mail($to, $subject, $message, $headers);
